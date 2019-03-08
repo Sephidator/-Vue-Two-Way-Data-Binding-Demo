@@ -24,7 +24,10 @@ class Watcher {
     /**
      * 订阅者Watcher在初始化的时候把自己添加到订阅器Dep当中
      * 监听器Observer在get函数的时候会执行添加Watcher的操作（Dep.target一句）
-     * 于是调用一次get函数来取得数据
+     * 于是调用一次get函数来触发上述操作，并取得数据
+     * 
+     * 我们只需要在订阅者Watcher初始化的时候才需要添加订阅者，
+     * 于是可以先在Dep.target上缓存下订阅者，添加成功之后将其去掉
      * */
     subscribe() {
         Dep.target = this;  // 缓存自己
