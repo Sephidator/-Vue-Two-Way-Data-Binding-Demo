@@ -9,7 +9,8 @@ class SelfVue {
     constructor(data, el, exp) {
         this.data = data;
 
-        Object.keys(data).forEach((key) => {
+        // 将对于selfVue.name的操作映射到selfVue.data.name上
+        Object.keys(this.data).forEach((key) => {
             Object.defineProperty(this, key, {
                 enumerable: false,
                 configurable: true,
@@ -22,9 +23,15 @@ class SelfVue {
             });
         });
 
+        /**
+         * 通过observe方法，为data的每个属性以及属性的属性（递归）来使用Object.defineProperty进行劫持
+         * 这样一来，set的时候会调用消息订阅器dep中的更新方法
+         * */ 
         observe(data);
+
         el.innerHTML = this.data[exp];  // 初始化模板数据的值
-        new Watcher(this, exp, (value) => {
+        new Watcher(this, exp, (value, oldVal) => {
+            console.log(oldVal);
             el.innerHTML = value;
         });
     }

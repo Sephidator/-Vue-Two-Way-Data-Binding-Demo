@@ -1,7 +1,7 @@
 class Watcher {
     /**
      * @param vm: 要绑定的SelfVue对象
-     * @param exp: 不知道是什么的缩写，指的是属性值的名称，在本例中是‘name’
+     * @param exp: 不知道是什么的缩写，指的是属性值的名称，在本例中是‘name’，参见index.js
      * @param cb: 修改了值过后的回调函数
      *  */
     constructor(vm, exp, cb) {
@@ -11,9 +11,6 @@ class Watcher {
         this.value = this.subscribe();  // 将自己添加到订阅器的操作
     }
     update() {
-        this.run();
-    }
-    run() {
         const value = this.vm.data[this.exp];
         const oldVal = this.value;
         if (value !== oldVal) {
@@ -28,6 +25,7 @@ class Watcher {
      * 
      * 我们只需要在订阅者Watcher初始化的时候才需要添加订阅者，
      * 于是可以先在Dep.target上缓存下订阅者，添加成功之后将其去掉
+     * 参见observer.js中的defineReactive方法
      * */
     subscribe() {
         Dep.target = this;  // 缓存自己
