@@ -41,7 +41,6 @@ class Compile{
         const fragment = document.createDocumentFragment();
         let child = el.firstChild;
         while (child) {
-            console.log(child);
             // 将Dom元素移入fragment中
             fragment.appendChild(child);
             child = el.firstChild
