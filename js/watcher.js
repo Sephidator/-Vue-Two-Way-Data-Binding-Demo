@@ -1,17 +1,17 @@
 class Watcher {
     /**
      * @param vm: 要绑定的SelfVue对象
-     * @param exp: 不知道是什么的缩写，指的是属性值的名称，在本例中是‘name’，参见index.js
+     * @param propertyName: 指的是属性值的名称，在本例中是‘name’，参见index.js
      * @param cb: 修改了值过后的回调函数
      *  */
-    constructor(vm, exp, cb) {
+    constructor(vm, propertyName, cb) {
         this.cb = cb;
         this.vm = vm;
-        this.exp = exp;
+        this.propertyName = propertyName;
         this.value = this.subscribe();  // 将自己添加到订阅器的操作
     }
     update() {
-        const value = this.vm.data[this.exp];
+        const value = this.vm.data[this.propertyName];
         const oldVal = this.value;
         if (value !== oldVal) {
             this.value = value;
@@ -29,7 +29,7 @@ class Watcher {
      * */
     subscribe() {
         Dep.target = this;  // 缓存自己
-        const value = this.vm.data[this.exp]  // 强制执行监听器里的get函数
+        const value = this.vm.data[this.propertyName]  // 强制执行监听器里的get函数
         Dep.target = null;  // 释放自己
         return value;
     }

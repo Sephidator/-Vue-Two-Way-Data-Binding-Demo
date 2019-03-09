@@ -23,7 +23,7 @@ class Observer {
          * 于是就可以看Watcher的subscribe方法
          * subscribe() {
          *     Dep.target = this;  // 缓存自己
-         *     const value = this.vm.data[this.exp]  // 强制执行监听器里的get函数
+         *     const value = this.vm.data[this.propertyName]  // 强制执行监听器里的get函数
          *     Dep.target = null;  // 释放自己
          *     return value;
          * }
