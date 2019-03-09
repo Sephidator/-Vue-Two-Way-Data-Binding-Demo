@@ -5,12 +5,16 @@
     <title>self-vue</title>
 </head>
 <style>
-    #name { text-align: center; }
+    #app {
+        text-align: center;
+    }
 </style>
-<body >
+<body>
     <div id="app">
-        <h1 id="name">{{title1}}</h1>
-        <h2 id="title">{{title2}}</h2>
+        <h2>{{title}}</h2>
+        <input v-model="name">
+        <h1>{{name}}</h1>
+        <button v-on:click="clickMe">click me!</button>
     </div>
 </body>
 <script src="js/observer.js"></script>
@@ -18,22 +22,22 @@
 <script src="js/compiler.js"></script>
 <script src="js/index.js"></script>
 <script type="text/javascript">
-    const selfVue = new SelfVue({
-        el: "#app",
+     new SelfVue({
+        el: '#app',
         data: {
-            title1: 'Old 1',
-            title2: 'Old 2'
+            title: 'hello world',
+            name: 'canfoo'
+        },
+        methods: {
+            clickMe: function () {
+                this.title = 'hello world';
+            }
+        },
+        mounted: function () {
+            window.setTimeout(() => {
+                this.title = '你好';
+            }, 1000);
         }
     });
-
-    window.setTimeout(function () {
-        console.log('name值改变了');
-        selfVue.title1 = 'New 1';
-    }, 2000);
-
-    window.setTimeout(function () {
-        console.log('title值改变了');
-        selfVue.title2 = 'New 2';
-    }, 4000);
 </script>
 </html>

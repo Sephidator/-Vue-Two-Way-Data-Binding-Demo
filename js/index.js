@@ -13,6 +13,7 @@ class SelfVue {
      *  */
     constructor(options) {
         this.data = options.data;
+        this.methods = options.methods;
 
         // 将对于selfVue.name的操作映射到selfVue.data.name上
         Object.keys(this.data).forEach((key) => {
@@ -34,5 +35,6 @@ class SelfVue {
          * */ 
         observe(this.data);
         new Compile(options.el, this);
+        options.mounted.call(this);  // 所有事情处理好后调用mounted函数
     }
 }

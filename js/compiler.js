@@ -39,7 +39,7 @@ class Compile{
      */
     nodeToFragment(el) {
         const fragment = document.createDocumentFragment();
-        const child = el.firstChild;
+        let child = el.firstChild;
         while (child) {
             console.log(child);
             // 将Dom元素移入fragment中
@@ -89,36 +89,38 @@ class Compile{
     }
     compile(node) {
         const nodeAttrs = node.attributes;
-        nodeAttrs.forEach((attr) => {
+        Array.prototype.forEach.call(nodeAttrs, (attr) => {
             const attrName = attr.name;
             if (this.isDirective(attrName)) {
                 const propertyName = attr.value;
                 const dir = attrName.substring(2);
                 if (this.isEventDirective(dir)) {  // 事件指令
-                    this.compileEvent(node, this.vm, propertyName, dir);
+                    this.compileEvent(node, propertyName, dir);
                 } else {  // v-model 指令
-                    this.compileModel(node, this.vm, propertyName, dir);
+                    this.compileModel(node, propertyName);
                 }
                 node.removeAttribute(attrName);
             }
         });
     }
-    compileEvent(node, vm, propertyName, dir) {
+    compileEvent(node, propertyName, dir) {
+        // 解析模版语法 v-on:click，得到click这个事件名称
         const eventType = dir.split(':')[1];
-        const cb = vm.methods && vm.methods[propertyName];
+        const cb = this.vm.methods && this.vm.methods[propertyName];
 
+        // 如果事件名称和回调函数都存在，就会给这个node绑上对应的回调
         if (eventType && cb) {
-            node.addEventListener(eventType, cb.bind(vm), false);
+            node.addEventListener(eventType, cb.bind(this.vm), false);
         }
     }
-    compileModel(node, vm, propertyName, dir) {
-        const val = this.vm[propertyName];
-        this.modelUpdater(node, val);
-        new Watcher(this.vm, propertyName, function (value) {
-            this.modelUpdater(node, value);
+    compileModel(node, propertyName) {
+        let val = this.vm[propertyName];
+        this.updateModel(node, val);
+        new Watcher(this.vm, propertyName, (value) => {
+            this.updateModel(node, value);
         });
 
-        node.addEventListener('input', function(e) {
+        node.addEventListener('input', (e) => {
             const newValue = e.target.value;
             if (val === newValue) {
                 return;
@@ -130,11 +132,11 @@ class Compile{
     updateText(node, value) {
         node.textContent = typeof value == 'undefined' ? '' : value;
     }
-    modelUpdater(node, value, oldValue) {
+    updateModel(node, value) {
         node.value = typeof value == 'undefined' ? '' : value;
     }
     isDirective(attr) {
-        return attr.indexOf('v-') == 0;
+        return attr.indexOf('v-') === 0;
     }
     isEventDirective(dir) {
         return dir.indexOf('on:') === 0;
